@@ -1,32 +1,15 @@
-name: NEWSKEYBAR News Bot
-
-'on':
-workflow_dispatch:
-schedule:
-- cron: "17,47 * * * *"
-
-permissions:
-contents: write
-
+name: News Bot
+'on': [push]
 jobs:
-publish-news:
+bot:
 runs-on: ubuntu-latest
 steps:
-- name: Checkout
-uses: actions/checkout@v4
-
-```
-  - name: Setup Python
-    uses: actions/setup-python@v5
-    with:
-      python-version: "3.12"
-
-  - name: Install dependencies
-    run: python -m pip install requests feedparser
-
-  - name: Run bot
-    env:
-      RUBIKA_TOKEN: ${{ secrets.RUBIKA_TOKEN }}
-      RUBIKA_CHAT_ID: "@newskeybar"
-    run: python news.py
-```
+- uses: actions/checkout@v4
+- uses: actions/setup-python@v5
+with:
+python-version: '3.12'
+- run: pip install requests feedparser
+- run: python news.py
+env:
+RUBIKA_TOKEN: ${{ secrets.RUBIKA_TOKEN }}
+RUBIKA_CHAT_ID: '@newskeybar'
