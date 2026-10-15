@@ -1,5 +1,5 @@
 ```yaml
-name: NEWSKEYBAR Automatic News Bot
+name: NEWSKEYBAR News Bot
 
 on:
   schedule:
@@ -10,18 +10,16 @@ permissions:
   contents: write
 
 concurrency:
-  group: newskeybar-bot
+  group: newskeybar
   cancel-in-progress: false
 
 jobs:
-  publish-news:
+  news:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          ref: main
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -32,6 +30,15 @@ jobs:
         env:
           RUBIKA_TOKEN: ${{ secrets.RUBIKA_TOKEN }}
           RUBIKA_CHAT_ID: "@newskeybar"
+        run: python news.py
+
+      - name: Save duplicate protection state
         run: |
-          python news.py
+          if [ -f posted.json ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add posted.json
+            git diff --cached --quiet || git commit -m "Update news history"
+            git push
+          fi
 ```
