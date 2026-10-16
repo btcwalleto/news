@@ -1,7 +1,12 @@
-name: Bot
-'on': [push]
+name: News Bot
+'on': [workflow_dispatch]
 jobs:
-  test:
+  bot:
     runs-on: ubuntu-latest
     steps:
-      - run: echo hello
+      - uses: actions/checkout@v4
+      - run: pip install requests feedparser
+      - run: python news.py
+        env:
+          RUBIKA_TOKEN: ${{ secrets.RUBIKA_TOKEN }}
+          RUBIKA_CHAT_ID: '@newskeybar'
